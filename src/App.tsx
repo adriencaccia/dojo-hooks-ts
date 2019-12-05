@@ -1,8 +1,27 @@
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import './App.css'
 import logo from './logo.svg'
 
+const useKeyboard = (keys: string[], onKeyDown: (key: string) => void): void => {
+  useEffect(() => {
+    const cb = (event: KeyboardEvent): void => {
+      const keyName = event.key
+      if (keys.includes(keyName)) {
+        onKeyDown(keyName)
+      }
+    }
+    document.addEventListener('keydown', cb)
+    return (): void => {
+      document.removeEventListener('keydown', cb)
+    }
+  }, [keys, onKeyDown])
+}
+
 const App: React.FC = () => {
+  const keys = ['A', 'B', 'C']
+  const onKeyDown = useCallback(key => console.log({ key }), [])
+
+  useKeyboard(keys, onKeyDown)
   return (
     <div className="App">
       <header className="App-header">
